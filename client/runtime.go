@@ -34,6 +34,7 @@ import (
 	"github.com/containerd/containerd/content"
 	"github.com/containerd/containerd/errdefs"
 	"github.com/containerd/containerd/images"
+	"github.com/containerd/containerd/leases"
 	"github.com/containerd/containerd/namespaces"
 	"github.com/containerd/containerd/oci"
 	"github.com/containerd/containerd/platforms"
@@ -173,7 +174,7 @@ func (r *runtime) ConfigRuntime(ctx context.Context) error {
 func (r *runtime) ImportImages(ctx context.Context, refs ...string) error {
 	ctx = namespaces.WithNamespace(ctx, r.namespace)
 
-	ctx, cancel, err := r.client.WithLease(ctx)
+	ctx, cancel, err := r.client.WithLease(ctx, leases.WithRandomID())
 	if err != nil {
 		return fmt.Errorf("add lease: %w", err)
 	}
